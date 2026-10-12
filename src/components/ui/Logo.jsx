@@ -10,7 +10,8 @@ export const Logo = ({
   showSubtitle = true
 }) => {
   const { theme } = useThemeStore();
-  const isLight = theme === 'light';
+  const isDark = theme === 'dark' || (typeof document !== 'undefined' && document.documentElement.classList.contains('dark'));
+  const isLight = !isDark;
 
   // If collapsed in sidebar, display compact emblem
   if (collapsed) {
