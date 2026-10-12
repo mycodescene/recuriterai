@@ -1,0 +1,606 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Sparkles,
+  ShieldCheck,
+  CheckCircle2,
+  AlertTriangle,
+  Github,
+  Linkedin,
+  Globe,
+  FileText,
+  ExternalLink,
+  RefreshCw,
+  HelpCircle,
+  Code2,
+  GitCommit,
+  Check,
+  ArrowRight,
+  Filter,
+  Brain,
+  Shield
+} from 'lucide-react';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { CircularScore } from '../../components/ui/CircularScore';
+import { Skeleton } from '../../components/ui/Skeleton';
+import { Typewriter } from '../../components/ui/Typewriter';
+import { RadarSkillsChart } from '../../components/charts/RadarSkillsChart';
+import { candidateService } from '../../services/api/candidateService';
+import { toast } from 'sonner';
+
+export const PersonaStudioPage = () => {
+  const { id = 'cand-1' } = useParams();
+  const navigate = useNavigate();
+  const [candidate, setCandidate] = useState(null);
+  const [allCandidates, setAllCandidates] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Claim filter state: 'all' | 'verified' | 'unverified'
+  const [claimFilter, setClaimFilter] = useState('all');
+
+  // AI Thinking Generation Simulation
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationStep, setGenerationStep] = useState(0);
+  const [typewriterActive, setTypewriterActive] = useState(false);
+
+  const generationSequence = [
+    { title: "Parsing PDF Document Structure", detail: "Extracting semantic entities and chronologies..." },
+    { title: "Analyzing Technical Competencies", detail: "Mapping frameworks against job ontology..." },
+    { title: "Connecting GitHub Telemetry", detail: "Inspecting commit velocity, PR reviews & repositories..." },
+    { title: "Querying LinkedIn Credentials", detail: "Verifying tenure overlaps and company registries..." },
+    { title: "Cross-Auditing Evidence Claims", detail: "Validating self-reported claims against external records..." },
+    { title: "Building Unified Candidate Persona", detail: "Synthesizing radar competencies and interview rubrics..." }
+  ];
+
+  useEffect(() => {
+    const load = async () => {
+      setIsLoading(true);
+      try {
+        const [cands, cand] = await Promise.all([
+          candidateService.getAll(),
+          candidateService.getById(id)
+        ]);
+        setAllCandidates(cands);
+        setCandidate(cand);
+        // Start typewriter on initial load
+        setTypewriterActive(true);
+      } catch (e) {
+        console.error('Failed to load candidate persona', e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    load();
+  }, [id]);
+
+  const handleRunPersonaGeneration = async () => {
+    setIsGenerating(true);
+    setGenerationStep(0);
+    setTypewriterActive(false);
+
+    for (let step = 0; step < generationSequence.length; step++) {
+      setGenerationStep(step);
+      await new Promise(r => setTimeout(r, 650));
+    }
+
+    setIsGenerating(false);
+    setTypewriterActive(true);
+    toast.success('AI Persona & Evidence audit re-calibrated successfully');
+  };
+
+  if (isLoading || !candidate) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-10 w-40" />
+        </div>
+        <Skeleton className="h-64 rounded-3xl" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Skeleton className="h-80 rounded-3xl" />
+          <Skeleton className="h-80 rounded-3xl" />
+        </div>
+      </div>
+    );
+  }
+
+  // Filter claims
+  const filteredClaims = (candidate.claims || []).filter(c => {
+    if (claimFilter === 'verified') return c.status === 'Verified';
+    if (claimFilter === 'unverified') return c.status === 'Unverified';
+    return true;
+  });
+
+  const verifiedCount = (candidate.claims || []).filter(c => c.status === 'Verified').length;
+  const unverifiedCount = (candidate.claims || []).filter(c => c.status === 'Unverified').length;
+
+  return (
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* 1. Studio Header with Candidate Switcher & Re-Generate Action */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <Badge variant="brand" size="sm" dot>Flagship Studio</Badge>
+            <span className="text-xs font-mono text-muted-foreground uppercase">Module 3</span>
+          </div>
+          <h1 className="text-2xl sm:text-4xl font-extrabold font-heading text-foreground tracking-tight mt-1">
+            AI Candidate Persona Studio
+          </h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+            Living evidence dossier generated by cross-auditing CV assertions with code and external registries.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          {/* Candidate selector */}
+          <select
+            value={candidate.id}
+            onChange={(e) => navigate(`/app/persona/${e.target.value}`)}
+            className="h-10 px-3 bg-card border border-card-border rounded-xl text-xs text-foreground outline-none focus:ring-2 focus:ring-brand-500 font-medium cursor-pointer"
+          >
+            {allCandidates.map(c => (
+              <option key={c.id} value={c.id}>
+                {c.name} ({c.title})
+              </option>
+            ))}
+          </select>
+
+          <Button
+            onClick={handleRunPersonaGeneration}
+            disabled={isGenerating}
+            variant="primary"
+            size="md"
+            leftIcon={<RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />}
+            className="shadow-glow-sm"
+          >
+            {isGenerating ? 'Synthesizing...' : 'Re-Generate Persona'}
+          </Button>
+        </div>
+      </div>
+
+      {/* AI Thinking Multi-Step Progress Modal / Overlay */}
+      <AnimatePresence>
+        {isGenerating && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-midnight-950/80 backdrop-blur-md"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95 }}
+              className="w-full max-w-lg rounded-3xl glass-panel border border-brand-500/40 p-8 shadow-2xl space-y-6"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-brand-500/20 text-brand-500 flex items-center justify-center animate-pulse">
+                  <Brain className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold font-heading text-foreground">
+                    Synthesizing Evidence Dossier
+                  </h3>
+                  <p className="text-xs text-muted-foreground font-mono">
+                    Candidate: {candidate.name}
+                  </p>
+                </div>
+              </div>
+
+              {/* Progress Steps */}
+              <div className="space-y-3">
+                {generationSequence.map((seq, idx) => {
+                  const isDone = idx < generationStep;
+                  const isCurrent = idx === generationStep;
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`p-3 rounded-xl border transition-all duration-200 flex items-center gap-3 ${
+                        isCurrent
+                          ? 'bg-brand-500/15 border-brand-500 shadow-glow-sm text-foreground'
+                          : isDone
+                          ? 'bg-muted/40 border-card-border text-foreground/80'
+                          : 'opacity-40 border-transparent text-muted-foreground'
+                      }`}
+                    >
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono font-bold shrink-0">
+                        {isDone ? (
+                          <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                        ) : isCurrent ? (
+                          <RefreshCw className="w-4 h-4 text-brand-500 animate-spin" />
+                        ) : (
+                          <span className="text-muted-foreground">{idx + 1}</span>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0 text-xs">
+                        <span className="font-semibold block">{seq.title}</span>
+                        {isCurrent && <span className="text-[11px] text-brand-400 font-mono block mt-0.5">{seq.detail}</span>}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 2. Massive Hero Persona Card */}
+      <Card className="p-6 sm:p-8 relative overflow-hidden border-brand-500/30 glass-panel shadow-2xl">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-brand-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Left Avatar & Identity Info */}
+          <div className="space-y-4 lg:col-span-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-brand-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white font-mono font-extrabold text-3xl shadow-glow-md">
+                {candidate.avatar}
+              </div>
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold font-heading text-foreground">
+                    {candidate.name}
+                  </h2>
+                  <Badge variant={candidate.riskLevel === 'Low' ? 'success' : 'risk'} size="sm">
+                    {candidate.riskLevel} Risk ({candidate.riskScore}%)
+                  </Badge>
+                  <span className="text-xs font-mono text-emerald-500 bg-emerald-500/10 px-2.5 py-0.5 rounded-full font-bold">
+                    {verifiedCount} Verified Claims
+                  </span>
+                </div>
+                <p className="text-sm font-medium text-foreground">
+                  {candidate.title}
+                </p>
+                <p className="text-xs text-muted-foreground font-mono">
+                  {candidate.currentCompany} • {candidate.location} • {candidate.experienceYears} Years Exp
+                </p>
+              </div>
+            </div>
+
+            {/* AI Summary with Streaming Typewriter Effect */}
+            <div className="p-5 rounded-2xl bg-muted/40 border border-card-border space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold uppercase text-brand-500 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  AI Persona Executive Synthesis
+                </span>
+                <span className="text-[10px] font-mono text-muted-foreground">Streaming LLM Alignment</span>
+              </div>
+              <div className="text-xs sm:text-sm text-foreground leading-relaxed">
+                {typewriterActive ? (
+                  <Typewriter text={candidate.personaSummary} speed={12} />
+                ) : (
+                  <span>{candidate.personaSummary}</span>
+                )}
+              </div>
+            </div>
+
+            {/* Key Strengths Chips */}
+            <div className="space-y-2 pt-1">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground block">
+                Evidence-Backed Strengths
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {candidate.strengths?.map((strength, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                    <span>{strength}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Confidence & Calibrated Meter */}
+          <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-muted/40 border border-card-border text-center space-y-4">
+            <CircularScore
+              score={candidate.personaConfidence || 95}
+              size={120}
+              strokeWidth={9}
+              label="CONFIDENCE"
+              colorScheme="brand"
+            />
+            <div>
+              <span className="text-sm font-bold text-foreground block">
+                Synthesis Confidence
+              </span>
+              <span className="text-[11px] text-muted-foreground font-mono leading-tight block mt-0.5">
+                Calibrated across 4 connected proof repositories
+              </span>
+            </div>
+            <div className="pt-2 w-full border-t border-card-border">
+              <div className="flex justify-between text-xs font-mono py-1">
+                <span className="text-muted-foreground">Match Score:</span>
+                <span className="text-emerald-500 font-bold">{candidate.matchScore}%</span>
+              </div>
+              <div className="flex justify-between text-xs font-mono py-1">
+                <span className="text-muted-foreground">Retention Score:</span>
+                <span className="text-brand-500 font-bold">{candidate.retentionScore}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* 3. Evidence Sources Panel */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-base font-bold font-heading text-foreground">
+              Connected Proof & Evidence Repositories
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Independent sources queried to validate claims, tenure, and code authorship.
+            </p>
+          </div>
+          <Badge variant="brand" size="sm">4 Sources</Badge>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {candidate.evidenceSources?.map((src, idx) => (
+            <Card key={idx} className="p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="p-2 rounded-xl bg-muted text-foreground">
+                  {src.type === 'GitHub' && <Github className="w-4 h-4" />}
+                  {src.type === 'LinkedIn' && <Linkedin className="w-4 h-4 text-blue-500" />}
+                  {src.type === 'CV' && <FileText className="w-4 h-4 text-brand-500" />}
+                  {src.type === 'Portfolio' && <Globe className="w-4 h-4 text-emerald-500" />}
+                  {src.type === 'Google Scholar' && <Brain className="w-4 h-4 text-indigo-400" />}
+                  {src.type === 'Figma Community' && <Code2 className="w-4 h-4 text-pink-400" />}
+                </div>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
+                  src.status === 'Connected' ? 'bg-emerald-500/10 text-emerald-400' :
+                  src.status === 'Limited by privacy' ? 'bg-amber-500/10 text-amber-400' :
+                  'bg-rose-500/10 text-rose-400'
+                }`}>
+                  {src.status}
+                </span>
+              </div>
+
+              <div>
+                <span className="text-xs font-bold text-foreground block truncate">{src.name}</span>
+                <span className="text-[10px] text-muted-foreground font-mono">
+                  {src.verifiedClaims} claims corroborated
+                </span>
+              </div>
+
+              <div className="text-[10px] text-muted-foreground/70 font-mono pt-1 border-t border-card-border flex justify-between">
+                <span>Audited:</span>
+                <span>{src.lastChecked}</span>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* 4. VERIFIED vs UNVERIFIED Claims Audit Section */}
+      <Card className="space-y-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-emerald-500" />
+              <h3 className="text-lg font-bold font-heading text-foreground">
+                Verified vs. Unverified Claims Audit
+              </h3>
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Each claim extracted from candidate resume is cross-examined against empirical evidence.
+            </p>
+          </div>
+
+          {/* Filter Segmented Control */}
+          <div className="flex items-center bg-muted/60 p-1 rounded-xl border border-card-border text-xs font-mono">
+            <button
+              onClick={() => setClaimFilter('all')}
+              className={`px-3 py-1.5 rounded-lg transition-colors ${claimFilter === 'all' ? 'bg-card text-brand-500 font-bold shadow-sm' : 'text-muted-foreground'}`}
+            >
+              All Claims ({candidate.claims?.length || 0})
+            </button>
+            <button
+              onClick={() => setClaimFilter('verified')}
+              className={`px-3 py-1.5 rounded-lg transition-colors ${claimFilter === 'verified' ? 'bg-card text-emerald-500 font-bold shadow-sm' : 'text-muted-foreground'}`}
+            >
+              Verified ({verifiedCount})
+            </button>
+            <button
+              onClick={() => setClaimFilter('unverified')}
+              className={`px-3 py-1.5 rounded-lg transition-colors ${claimFilter === 'unverified' ? 'bg-card text-amber-500 font-bold shadow-sm' : 'text-muted-foreground'}`}
+            >
+              Unverified ({unverifiedCount})
+            </button>
+          </div>
+        </div>
+
+        {/* Claims List */}
+        <div className="divide-y divide-card-border">
+          {filteredClaims.map((claim) => (
+            <div
+              key={claim.id}
+              className="py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-muted/20 px-3 rounded-xl transition-colors"
+            >
+              <div className="space-y-1.5 flex-1">
+                <div className="flex items-center gap-2.5">
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${
+                    claim.status === 'Verified'
+                      ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                      : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
+                  }`}>
+                    {claim.status}
+                  </span>
+                  <span className="text-xs sm:text-sm font-semibold text-foreground">
+                    {claim.text}
+                  </span>
+                </div>
+                <p className="text-[11px] text-muted-foreground font-mono flex items-center gap-1.5">
+                  <Check className="w-3 h-3 text-brand-500" />
+                  Supporting Evidence: {claim.source}
+                </p>
+              </div>
+
+              {claim.link && claim.link !== '#' && (
+                <a
+                  href={claim.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-mono text-brand-500 hover:text-brand-400 hover:bg-brand-500/10 transition-colors shrink-0"
+                >
+                  <span>Verify Source</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* 5. Deep Diagnostics: Skills Radar & GitHub Code Heatmap */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Animated Skills Radar */}
+        <Card className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-bold font-heading text-foreground">
+                Technical Competency Radar
+              </h3>
+              <p className="text-xs text-muted-foreground">Multi-axis proficiency mapping</p>
+            </div>
+            <Badge variant="brand" size="sm">Calibrated</Badge>
+          </div>
+          <RadarSkillsChart data={candidate.radarSkills} height={320} />
+        </Card>
+
+        {/* GitHub Activity & Language Telemetry */}
+        <Card className="space-y-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-bold font-heading text-foreground">
+                Code Telemetry & Repo Activity
+              </h3>
+              <p className="text-xs text-muted-foreground">Observed commit patterns across last 12 months</p>
+            </div>
+            <Github className="w-5 h-5 text-muted-foreground" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 text-center font-mono">
+            <div className="p-4 rounded-xl bg-muted/40 border border-card-border">
+              <span className="text-[10px] text-muted-foreground uppercase block">Annual Commits</span>
+              <span className="text-2xl font-bold text-foreground">
+                {candidate.githubHeatmap?.totalCommitsLastYear || 0}
+              </span>
+            </div>
+            <div className="p-4 rounded-xl bg-muted/40 border border-card-border">
+              <span className="text-[10px] text-muted-foreground uppercase block">Active Code Days</span>
+              <span className="text-2xl font-bold text-emerald-500">
+                {candidate.githubHeatmap?.activeDaysPercentage || 0}%
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground block">
+              Top Repository Languages
+            </span>
+            <div className="space-y-2">
+              {candidate.githubHeatmap?.languages?.map((lang, idx) => (
+                <div key={idx} className="space-y-1">
+                  <div className="flex justify-between text-xs font-mono">
+                    <span className="text-foreground">{lang.name}</span>
+                    <span className="text-muted-foreground font-bold">{lang.percentage}%</span>
+                  </div>
+                  <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${lang.percentage}%`, backgroundColor: lang.color || '#6D5EF5' }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* 6. Interview Prompts & Potential Concerns */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Suggested Interview Questions */}
+        <Card className="space-y-4 border-brand-500/20">
+          <div className="flex items-center gap-2 text-brand-500">
+            <HelpCircle className="w-5 h-5" />
+            <h3 className="text-base font-bold font-heading text-foreground">
+              Calibrated Interview Prompts
+            </h3>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Questions targeted at probed friction points, complex project validations, and cultural alignment:
+          </p>
+          <div className="space-y-3">
+            {candidate.suggestedQuestions?.map((q, idx) => (
+              <div key={idx} className="p-3.5 rounded-xl bg-muted/40 border border-card-border text-xs text-foreground flex items-start gap-3">
+                <span className="w-5 h-5 rounded-md bg-brand-500/10 text-brand-500 font-mono font-bold text-xs flex items-center justify-center shrink-0">
+                  {idx + 1}
+                </span>
+                <span className="leading-relaxed">{q}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Potential Friction Concerns */}
+        <Card className="space-y-4 border-amber-500/20">
+          <div className="flex items-center gap-2 text-amber-500">
+            <AlertTriangle className="w-5 h-5" />
+            <h3 className="text-base font-bold font-heading text-foreground">
+              Probed Nuances & Discussion Points
+            </h3>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Non-disqualifying areas requiring clarification during the recruiter screen:
+          </p>
+          <div className="space-y-3">
+            {candidate.concerns?.map((c, idx) => (
+              <div key={idx} className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-foreground flex items-start gap-3">
+                <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0 mt-1.5" />
+                <span className="leading-relaxed">{c}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      {/* 7. Mandatory Human-Review Footer Banner */}
+      <div className="p-4 rounded-2xl bg-brand-500/10 dark:bg-brand-500/15 border border-brand-500/25 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs shadow-sm">
+        <div className="flex items-center gap-3">
+          <Shield className="w-5 h-5 text-brand-500 shrink-0" />
+          <span className="text-muted-foreground font-mono font-medium">
+            AI-generated insight. Review before making hiring decisions. Candidate ID: {candidate.id}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => navigate('/app/matching')}
+            className="text-xs"
+          >
+            Compare in Matching
+          </Button>
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={() => navigate('/app/offers')}
+            className="text-xs"
+          >
+            Proceed to Offer
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};

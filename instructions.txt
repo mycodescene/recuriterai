@@ -1,0 +1,163 @@
+ROLE
+You are a senior product designer and principal frontend engineer. You have shipped award-winning SaaS dashboards (Linear, Stripe, Vercel, Notion level polish). Build a COMPLETE, WORKING, production-quality frontend for "Recruiter.AI: Intelligent Hiring Decision Support System". Do not give me a plan or wireframes only. Build it, run it, open it in the browser, test every page and fix every bug before you tell me you're done.
+
+PROJECT CONTEXT
+Recruiter.AI is an AI-powered web platform for HR professionals. It helps them screen CVs, build evidence-based candidate personas, match candidates to jobs, detect hiring risk, predict retention and workforce demand, optimize job offers, and send AI-drafted selection/rejection emails. The core principle: AI ASSISTS the recruiter, it never makes the final hiring decision. Human review and approval is always visible in the UX.
+
+Target users: HR professionals and recruiters. Tone: trustworthy, intelligent, calm, premium.
+
+TECH STACK (frontend)
+- React 18 + Vite + JavaScript (or TypeScript if you prefer, but keep it clean)
+- Tailwind CSS with a custom design-token config
+- Framer Motion for all animations and page transitions
+- React Router v6
+- Recharts for charts, plus custom SVG for gauges and radar charts
+- Lucide React for icons
+- Zustand (or Context) for state
+- React Hook Form + Zod for forms
+- Sonner or react-hot-toast for toasts
+- Axios, with a SERVICE LAYER that talks to a FastAPI backend at VITE_API_BASE_URL (REST + JWT). Every service function must fall back to realistic MOCK DATA when the backend is unreachable, so the app works fully standalone right now and can be wired to the real FastAPI backend later by flipping one env flag (VITE_USE_MOCK=true).
+- Mock API calls must simulate latency (400–1200ms) so loading states and skeletons are visible.
+
+DESIGN DIRECTION: "Modern, Professional, Elegant"
+Create a distinctive look. Avoid generic template-looking UI.
+
+1. Theme
+- Ship BOTH Light and Dark mode with a smooth animated toggle, persisted in localStorage, and respecting prefers-color-scheme.
+- Palette: deep midnight indigo (#0B1020 base for dark), a vibrant electric violet to indigo gradient as the primary brand (#6D5EF5 → #4F46E5), a fresh emerald accent for positive/verified (#10B981), amber for caution (#F59E0B), rose for risk (#F43F5E), and soft slate neutrals. Light mode uses warm off-white (#F7F8FC) with white cards.
+- Define all colors as CSS variables / Tailwind tokens. No hard-coded hex in components.
+- Use subtle glassmorphism on select surfaces (frosted cards, navbar, modals), soft layered shadows, 16–24px rounded corners, and thin 1px borders with low-opacity strokes.
+- Add refined background details: a soft animated gradient mesh or aurora glow behind the hero, and a faint grid or noise texture on dashboards. Keep it elegant, not loud.
+
+2. Typography (BIG and confident)
+- Headings: "Sora" or "Plus Jakarta Sans" (Google Fonts). Body: "Inter". Mono for scores/IDs: "JetBrains Mono".
+- Large, bold, editorial type scale:
+  - Hero H1: clamp(3rem, 7vw, 5.5rem), weight 800, tight tracking (-0.03em), gradient text on key words
+  - Page titles: 2.5–3rem, weight 700
+  - Section headings: 1.75–2rem
+  - Body: 1.0625–1.125rem with 1.7 line-height
+  - Big KPI numbers: 3–4rem, tabular-nums, with animated count-up
+  - Minimum UI text size 14px. Never tiny, cramped text.
+- Generous whitespace and strong hierarchy. Every screen should have one clear focal point.
+
+3. Animations and micro-interactions (use Framer Motion)
+- Page transitions: fade + slight upward slide, with AnimatePresence between routes.
+- Staggered entrance for cards, lists and table rows.
+- Scroll-triggered reveal animations on the landing page (whileInView).
+- Animated count-up on every KPI.
+- Animated circular gauges and progress bars for match score, risk score, retention score (animate from 0 to value on mount).
+- Charts animate on load.
+- Hover effects: card lift + glow, button shine sweep, magnetic CTA buttons, icon nudges.
+- Animated sidebar with collapse/expand and a sliding active-indicator pill (layoutId).
+- Skeleton shimmer loaders for all async content, plus a skeleton-to-content crossfade.
+- "AI thinking" animation for persona generation: a multi-step progress sequence (Parsing CV → Extracting skills → Checking GitHub → Checking LinkedIn → Verifying evidence → Building persona) with a typewriter / streaming text effect for the AI summary.
+- Drag-and-drop CV upload zone with an animated dashed border and a success checkmark morph.
+- Animated toasts, modal spring transitions, tab underline slide.
+- Respect prefers-reduced-motion by disabling heavy motion.
+- Keep animation smooth (60fps), purposeful, and never blocking.
+
+4. UX quality bar
+- Fully responsive: mobile (360px), tablet, laptop, large desktop. Sidebar becomes a bottom sheet / drawer on mobile.
+- Accessible: WCAG AA contrast, visible focus rings, keyboard navigation, aria labels, semantic HTML.
+- Every list/screen needs a designed Empty state, Loading (skeleton) state, and Error state.
+- Command palette (Cmd/Ctrl+K) for quick navigation and search.
+- Breadcrumbs, tooltips, and helpful inline hints explaining AI results.
+
+PAGES AND FEATURES (build ALL of them, mapped to the 9 project modules)
+
+A) PUBLIC LANDING PAGE ( / )
+- Sticky glass navbar with logo, links, theme toggle, Login and "Get Started" buttons.
+- Massive hero: giant headline like "Hire smarter. Decide with evidence." with gradient accent, short subheading, two CTAs, and an animated product preview (floating dashboard cards with parallax and a live-looking score gauge).
+- Trust strip, a "How it works" 4-step animated timeline, a feature grid for all AI modules, a big highlighted "Candidate Persona Generation" section (the flagship feature), a Human-in-the-loop section ("AI assists. You decide."), an animated stats band, FAQ accordion, final CTA, footer.
+
+B) AUTH (Module 1: User & Recruiter Management)
+- Login, Register, Forgot Password: split-screen layout with an animated brand panel, form validation, show/hide password, loading button states, JWT stored securely in the auth store, protected routes with redirect, role-aware routing (Recruiter, Admin).
+- Profile and Settings page: edit recruiter profile, company info, password change, notification preferences, theme preference, email-signature setup.
+- Demo credentials button: "Use demo account" that logs in instantly in mock mode.
+
+C) APP SHELL
+- Collapsible sidebar with grouped navigation: Dashboard, Jobs, Candidates, Persona Studio, Matching, Risk Intelligence, Retention, Workforce Demand, Offer Optimizer, Communications, Reports, Settings.
+- Top bar with global search, Cmd+K hint, notifications dropdown, theme toggle, and a user menu.
+
+D) RECRUITMENT DASHBOARD & REPORTING (Module 9) ( /app/dashboard )
+- Personalized greeting header with the date.
+- 4 large animated KPI cards: Active Jobs, Total Candidates, Avg Match Score, Pending Email Approvals, each with a sparkline and trend delta.
+- Hiring funnel chart, candidates-over-time area chart, risk distribution donut, top matched candidates leaderboard, AI insights feed ("3 candidates have inconsistent experience dates"), recent activity timeline.
+- Reports page: filterable report builder, date range picker, and export buttons (PDF/CSV, simulated download with a progress toast).
+
+E) JOB & REQUIREMENT MANAGEMENT (Module 2) ( /app/jobs )
+- Jobs list with grid/table toggle, search, filters (status, department, location), sort, and status badges.
+- Create/Edit Job: multi-step form wizard with an animated stepper (Basics → Skills & Experience → Qualifications → Review). Skill tag input with autocomplete chips, experience range slider, qualifications, salary band, and a live preview card on the side.
+- Job detail page showing requirements and a ranked list of matched candidates.
+
+F) CANDIDATE MANAGEMENT AND CV UPLOAD ( /app/candidates )
+- Drag-and-drop multi-file PDF CV upload with per-file progress and a simulated "AI extracting" state.
+- Candidates table/cards with avatar, headline, top skills, match %, risk badge, status. Bulk select, filters, saved views.
+- Candidate profile page with tabs: Overview, Persona, Experience, Skills, Evidence, Risk, Retention, Offer, Communication.
+
+G) AI CANDIDATE PERSONA GENERATION (Module 3) - THE FLAGSHIP FEATURE ( /app/persona/:id )
+Make this the most beautiful and impressive screen in the whole app.
+- Hero persona card: avatar, name, headline, an AI-written persona summary with a streaming typewriter effect, key strengths chips, and an overall confidence meter.
+- Evidence sources panel: connected-source cards for CV, GitHub, LinkedIn, Portfolio with status (Connected / Limited by privacy / Unavailable) and last-checked time.
+- VERIFIED vs UNVERIFIED claims: a clear two-column or segmented view where each claim shows a green "Verified" or amber "Unverified" badge, the supporting evidence, and a source link. Include a toggle to filter.
+- Skills radar chart (animated), skills proficiency bars, experience timeline (vertical animated), and GitHub activity heatmap and top-languages donut (mock data).
+- Strengths, potential concerns, and suggested interview questions.
+- A "Generate Persona" flow with the multi-step AI-thinking animation described above.
+- Footer note on this screen: "AI-generated insight. Review before making decisions."
+
+H) CANDIDATE SCREENING & MATCHING (Module 4) ( /app/matching )
+- Select a job, then see a ranked candidate list with animated rank changes (layout animation).
+- Each row: match score ring, semantic-similarity breakdown (skills, experience, education), matched/missing skills chips.
+- Side-by-side comparison of up to 3 candidates with a radar overlay.
+- Weight sliders (skills / experience / education) that re-rank live.
+
+I) AI RECRUITMENT FRAUD & RISK INTELLIGENCE (Module 5) ( /app/risk )
+- Risk overview with a large animated gauge (0–100), color-coded Low / Medium / High.
+- Flag list with explainable reasons: inconsistent dates, duplicated CV content, unsupported claims, mismatched profile data. Each flag has severity, evidence and a "Mark as reviewed" action.
+- Risk distribution chart and a sortable high-risk candidate table.
+
+J) AI CANDIDATE RETENTION PREDICTOR (Module 6) ( /app/retention )
+- Retention likelihood gauge, retention risk score, and a "contributing factors" bar chart (positive vs negative drivers, SHAP-style).
+- What-if simulator: sliders (salary, commute, tenure history) that update the prediction live with animated transitions.
+
+K) AI WORKFORCE DEMAND PREDICTOR (Module 7) ( /app/workforce )
+- Forecast line/area chart with confidence band for the next 6–12 months, an emerging-skills ranking with trend arrows, role-demand heatmap, and department filter. Include an insight summary card in plain English.
+
+L) AI JOB OFFER OPTIMIZATION (Module 8) ( /app/offers )
+- Select candidate and job, then show a recommended salary range as an animated range bar with market median marker, benefits package recommendations, acceptance-probability gauge, and a compensation breakdown chart.
+- Interactive sliders to tweak the offer and watch acceptance probability change live. "Save offer to candidate" action.
+
+M) AUTOMATED CANDIDATE COMMUNICATION (Communications hub) ( /app/communications )
+- Queue of AI-generated emails: Selection (congratulatory) and Rejection (constructive, skills-based feedback), each linked to a candidate and evaluation score.
+- Gmail-style split view: list on the left, rich preview/editor on the right. Recruiter can Edit, Regenerate (with tone selector: Warm / Formal / Concise), Approve, or Reject.
+- NOTHING sends without explicit recruiter approval. Show a clear "Pending approval" badge. A "Send" action opens a confirmation modal, then plays a send animation and a success toast. Bulk approve with a confirm dialog.
+- Status tabs: Pending, Approved, Sent, Rejected.
+
+MOCK DATA (make it feel real)
+- 12–20 diverse candidates (mix of Pakistani and international names), 6–8 jobs (Software Engineer, Data Scientist, Product Designer, DevOps Engineer, HR Executive, etc.), realistic skills, experience, scores, risk flags, GitHub and LinkedIn evidence, and pre-generated emails.
+- Centralize it in /src/mocks and expose it only through the service layer.
+- Use generated avatar initials or illustrated gradients. Do not hotlink random external images.
+
+PROJECT STRUCTURE
+src/
+  assets/ components/ui (Button, Card, Badge, Input, Modal, Tabs, Tooltip, Skeleton, Gauge, Stepper, Toast…)
+  components/layout (Sidebar, Topbar, AppShell, CommandPalette)
+  components/charts  features/<module>  pages  routes  services/api  mocks  store  hooks  lib  styles
+Build a reusable component library first (design tokens → primitives → feature components → pages). Keep components small, typed or documented, and reusable.
+
+ENGINEERING REQUIREMENTS
+- Clean, readable, commented code. ESLint and Prettier configured.
+- Lazy-load routes with Suspense and an animated fallback.
+- .env.example with VITE_API_BASE_URL and VITE_USE_MOCK.
+- A README with setup steps, scripts, folder structure, how to switch from mock to the FastAPI backend, and the expected REST endpoint list per module.
+- No console errors or warnings. No broken links, dead buttons, or placeholder "Lorem ipsum".
+
+DEFINITION OF DONE (verify yourself using the browser)
+1. Run `npm install` and `npm run dev`. The app starts with zero errors.
+2. Open it in the browser and walk through the full flow: Landing → Register/Login (demo account) → Dashboard → Create Job → Upload CV → Generate Persona → Matching → Risk → Retention → Workforce → Offer → Communications (edit, approve, send) → Reports → Settings → Logout.
+3. Test dark and light mode, mobile, tablet, and desktop widths. Fix any layout, overflow, or contrast problems.
+4. Confirm every animation works and is smooth, and every button, form, filter, tab and modal does something real.
+5. Take screenshots of the key screens and fix anything that looks generic, cramped, misaligned, or visually weak. Iterate until it looks like a premium, funded-startup product.
+6. Run `npm run build` and confirm it succeeds.
+
+Finish with a short summary: how to run it, what was built per module, and anything that needs the real backend.

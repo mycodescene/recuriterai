@@ -1,0 +1,102 @@
+ROLE
+You are a world-class Creative Director + Senior Design Engineer (think Linear, Vercel, Stripe, Framer, Arc browser, Raycast level craft). The Recruiter.AI frontend already exists and works, but the UI is too plain, flat and generic. Your job is to REDESIGN and ELEVATE the visual layer into a stunning, eye-catching, award-worthy product, WITHOUT breaking any existing functionality, routes, services or mock-data logic. Work on the existing codebase. Do not rebuild from scratch.
+
+Open the running app in the browser, review every page in BOTH light and dark mode, and fix everything below. Do not stop until it looks like a premium, funded-startup product. Verify with screenshots after every major change.
+
+══════════════════════════════════════════
+PHASE 1: FIX THESE BUGS FIRST (found in current screenshots)
+══════════════════════════════════════════
+1. SECOND CTA BUTTON IS BROKEN: on the Landing hero and the Dashboard header, the secondary button renders as a solid black/near-black box with invisible text. Fix the secondary/outline/ghost Button variants so they have correct background, border, text color, hover and focus states in BOTH themes. Audit every Button variant (primary, secondary, outline, ghost, danger, icon) for contrast.
+2. SIDEBAR "Human-in-the-Loop" CARD is an unreadable grey block (low-contrast text on grey) in light mode. Redesign it as a refined gradient-border card with a shield icon, readable text, and a subtle animated glow.
+3. DARK MODE INPUTS: search bar, department dropdown and other form fields stay WHITE with invisible placeholder/text in dark mode. Theme ALL inputs, selects, textareas, date pickers, dropdown menus, modals, tooltips, popovers, tables and charts properly for dark mode. No component may use hard-coded white/black. Everything must use design tokens (CSS variables).
+4. TOP BAR USER MENU is clipped ("Sarah Recrui..."). Fix overflow, truncate gracefully, and keep it responsive.
+5. Large empty dead space on pages (e.g., Jobs page has a huge empty area below the cards, dashboard has wasted side margins). Rebalance layouts: use a wider max-width, a proper 12-column grid, and fill the space with meaningful content (summary strips, insight panels, filters rail, quick stats).
+6. Run a full contrast audit (WCAG AA) on every text/background pair in both themes and fix failures.
+
+══════════════════════════════════════════
+PHASE 2: NEW DESIGN LANGUAGE ("Aurora Glass Intelligence")
+══════════════════════════════════════════
+Goal: it should make someone say "wow" within 2 seconds. Rich, layered, luminous, premium, but still professional and readable for HR users.
+
+A) COLOR SYSTEM (rebuild tokens for light AND dark)
+- Brand gradient: electric violet → indigo → cyan (#7C3AED → #4F46E5 → #06B6D4). Secondary accent gradients: emerald→teal (positive), amber→orange (caution), rose→pink (risk).
+- DARK MODE (make this gorgeous, not flat navy): deep ink background (#070A14) with layered surfaces (#0D1224, #121936), soft violet and cyan radial "aurora" glows in the corners, faint grid + film-grain noise overlay, glass cards with rgba backgrounds, backdrop-blur, 1px gradient borders that glow on hover, and inner top-highlight lines for depth. Text must be crisp: primary #F5F7FF, secondary #A9B1D6.
+- LIGHT MODE: not plain white. Use a soft pearl background (#F6F7FB) with pastel mesh-gradient blobs (lavender, sky, mint), white glass cards with colored soft shadows (shadow tinted with brand color), subtle gradient borders.
+- Make the theme toggle a beautiful animated sun/moon morph with a circular reveal (View Transitions API clip-path) that expands from the toggle button across the screen.
+
+B) TYPOGRAPHY (bigger, bolder, more editorial)
+- Headings: "Sora" or "Clash Display"/"Cabinet Grotesk" style (use Sora via Google Fonts if the others are unavailable). Body: "Inter". Numbers: "JetBrains Mono" but ONLY for numeric data and tiny code-like tags.
+- STOP overusing uppercase monospace for labels everywhere (it makes the UI feel cold and cramped). Use mono only for scores, IDs and metrics. Use clean sentence-case Inter/Sora with weight 500–600 for labels and card titles.
+- Scale up: Hero H1 up to 6.5rem; page titles 3rem+; card titles 1.25–1.5rem; KPI numbers 4rem+ with gradient fill; body 1.0625–1.125rem. Add gradient text on key words, and tight tracking on large headings.
+
+C) TEXT ANIMATIONS (add these wherever they fit)
+- Hero headline: word-by-word or character-by-character reveal with blur-to-sharp + slide-up stagger; the gradient word "evidence." should have a shimmering animated gradient sweep that loops slowly.
+- A rotating typewriter/morphing word in the hero subtitle (e.g., "Hire smarter with: Evidence → Personas → Predictions → Confidence") with a blinking caret.
+- Page titles throughout the app: split-text entrance (each word slides up out of a mask).
+- KPI numbers: odometer / count-up with easing, and a subtle glow pulse when they finish.
+- AI-generated content (persona summary, insights, email drafts): streaming typewriter effect with a glowing caret and a "✨ AI is writing…" shimmer label.
+- Scroll-triggered text reveals on the landing page (lines fade/slide in as they enter view), plus a large scroll-velocity marquee of module names between sections.
+- Section labels: animated underline draw. Buttons: text slide-swap on hover (label rolls up, duplicate rolls in).
+- Greeting on the dashboard ("Good morning, Sarah") with a letter-by-letter reveal and a waving-hand animation.
+- Respect prefers-reduced-motion.
+
+D) LANDING PAGE REDESIGN
+- Full-bleed hero with animated aurora mesh gradient background, floating glass orbs, subtle particle/dot-grid with mouse-follow spotlight effect (radial gradient following the cursor).
+- Replace the flat white product mockup with a 3D-tilted dashboard preview (CSS perspective, parallax on mouse move) surrounded by floating glass chips ("94% Match", "14 Claims Verified", "Low Risk 12%", "Email Approved") that gently bob. Add an animated glowing gradient border that rotates around the mockup.
+- Add: animated logo marquee/"trusted by teams" strip, bento-grid feature section (varied card sizes, each with a mini live animated visual: a radar chart drawing, a gauge filling, an email composing, a heatmap pulsing), a horizontally-scrolling or sticky-scroll "How it works" with step visuals that change as you scroll, a big flagship "Persona Studio" showcase with an interactive demo, animated stat counters, testimonial cards, pricing-style "Human-in-the-Loop" trust section, FAQ accordion with smooth height animation, and a huge gradient CTA section with a magnetic button and glow.
+- Navbar: floating pill-shaped glass navbar that shrinks and blurs on scroll, with an animated active-link indicator.
+
+E) APP SHELL AND DASHBOARD UPGRADE
+- Sidebar: glass panel with soft inner glow; active item has a sliding gradient pill with a glowing left indicator; icons animate on hover (tilt/bounce); section labels in small refined sentence-case; collapsed state shows tooltips; add a subtle gradient fade at top/bottom of the scroll area; user card with status dot at the bottom.
+- Top bar: translucent blur bar, a beautiful command palette trigger (Cmd+K) that opens a centered glass modal with grouped results and keyboard hints, notification bell with an animated ping, and a clean avatar menu.
+- Dashboard: 
+  - Hero greeting banner with gradient mesh background, today's date and a one-line AI summary ("3 things need your attention"), plus quick-action buttons.
+  - KPI cards as glass cards with gradient icon badges, animated sparklines that draw in, trend chips (green/red with arrows), and a hover tilt (3D tilt with glare effect).
+  - Charts: replace flat default Recharts styling with gradient fills, rounded bar ends, custom glass tooltips, glowing active dots, animated draw-in, and soft gridlines.
+  - Funnel: redesign as a smooth tapered funnel or animated gradient bars with the percent labels, step icons and hover details.
+  - AI Alert: turn into an attention-grabbing card with an animated gradient border, a pulsing sparkle icon and a smooth CTA.
+  - Add new widgets to fill space: "Top Candidates" leaderboard with avatars and animated score rings, "AI Insights" feed with typewriter text, "Upcoming Actions" checklist, activity timeline, and a mini calendar/hiring-pipeline kanban preview.
+- Cards everywhere: glass surface, gradient hairline border, layered tinted shadows, hover lift with spotlight glow that follows the cursor inside the card, and staggered entrance.
+
+F) JOBS PAGE (and similar list pages)
+- Richer job cards: gradient accent strip at top, department icon badge, applicant avatars stack ("+38"), a mini match-quality bar, salary shown prominently with a currency pill, skill chips with color-coded categories, a hover state that reveals quick actions (View candidates, Edit, Duplicate), and a favorite/pin toggle.
+- Add a top summary strip (Total jobs, Active, Drafts, Avg applicants) with animated numbers; filter chips row with animated selection; fix the search bar and department select in dark mode; animated grid↔list layout transition (Framer Motion layout).
+- Empty/loading states with illustrated SVGs and shimmer skeletons.
+
+G) OTHER MODULE PAGES (apply the same language to ALL)
+- Persona Studio: cinematic hero card with a glowing animated avatar ring, glass evidence cards, animated verified/unverified badges (pop + checkmark draw), animated radar chart, an animated experience timeline with a progress line that draws on scroll.
+- Matching: rank rows with animated layout reordering, score rings with gradient strokes, and animated "missing skill" chips.
+- Risk: dramatic gauge with a glowing needle and color-shifting arc, pulsing severity dots for high risk.
+- Retention, Workforce, Offer Optimizer: premium chart styling, slider thumbs with glow and live tooltip values, animated range bars.
+- Communications: elegant email-client look, an "AI composing" animation, a send animation (paper-plane flies and the card dissolves), confetti burst on a Selection email being sent.
+- Reports, Settings, Auth pages: split-screen auth with an animated 3D/aurora brand panel and floating glass cards.
+
+H) MICRO-INTERACTIONS AND POLISH
+- Buttons: gradient fill with animated shine sweep, press scale, glow shadow on hover, loading spinner morph; magnetic effect on primary CTAs.
+- Cards: 3D tilt + cursor spotlight. Inputs: floating labels, animated focus ring with a gradient glow, validation shake on error.
+- Toggle/switch, checkbox, radio, tabs (sliding underline pill), tooltips, dropdowns and modals with spring physics and backdrop blur.
+- Custom styled scrollbars (thin, rounded, theme-aware), custom text selection color, and smooth scroll.
+- Page transitions with a subtle blur + slide, a top progress bar on navigation, and a beautiful animated loading screen with the logo.
+- Add a subtle custom cursor glow on desktop landing page only.
+- Success moments (offer saved, email sent, persona generated) get a tasteful celebratory animation (confetti or sparkle burst).
+- Use consistent 8px spacing, consistent radii (xl/2xl/3xl), and consistent icon sizes. Make everything feel intentionally designed.
+
+══════════════════════════════════════════
+PHASE 3: PERFORMANCE AND QUALITY GUARDRAILS
+══════════════════════════════════════════
+- Keep 60fps: animate transform/opacity only, use will-change sparingly, lazy-load heavy visuals, and throttle mouse-tracking effects with requestAnimationFrame.
+- Provide a "Reduce motion" setting in Settings and honor prefers-reduced-motion.
+- Fully responsive (360px → 4K). Test mobile nav drawer, tablet and desktop.
+- Do not remove or break existing features, routes, state, forms or mock services. Only upgrade presentation, layout and motion.
+- No console errors. Clean, reusable components (create shared primitives such as GlassCard, GradientText, SplitText, Typewriter, CountUp, SpotlightCard, TiltCard, AuroraBackground, MagneticButton, Marquee).
+- Centralize the new tokens in tailwind.config + global CSS variables so both themes are controlled from one place.
+
+══════════════════════════════════════════
+DEFINITION OF DONE
+══════════════════════════════════════════
+1. Every bug in Phase 1 is fixed and verified by screenshot in light AND dark mode.
+2. Landing, Dashboard, Jobs, Candidates, Persona, Matching, Risk, Retention, Workforce, Offers, Communications, Reports, Settings and Auth all share the new "Aurora Glass" language and look consistently premium in BOTH themes.
+3. Text animations are present on hero, page titles, KPIs and AI-generated text.
+4. No white-on-white, black-on-black, clipped or low-contrast elements anywhere.
+5. `npm run build` passes and the app runs without console errors.
+6. Finish with a summary of what changed per page, and attach before/after screenshots of Landing, Dashboard and Jobs in both themes.
