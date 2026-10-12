@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles,
   ArrowRight,
@@ -39,6 +39,49 @@ export const LandingPage = () => {
   const { demoLogin } = useAuthStore();
   const [openFaq, setOpenFaq] = useState(null);
   const [previewTab, setPreviewTab] = useState('dossier'); // 'dossier' | 'cybernetic'
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  const heroSlides = [
+    {
+      badge: "Autonomous Decision Support System for Modern Talent Teams",
+      prefix: "Hire smarter.",
+      action: "Decide with",
+      highlight: "evidence.",
+      gradient: "from-brand-500 via-indigo-500 to-brand-cyan",
+      subtitle: "Eliminate CV guesswork with evidence-audited candidate personas, multi-source verification, fraud risk intelligence, and human-in-the-loop offer optimization."
+    },
+    {
+      badge: "Multi-Source Verification & Continuous Anti-Fraud Telemetry",
+      prefix: "Screen deeper.",
+      action: "Uncover with",
+      highlight: "zero fraud.",
+      gradient: "from-emerald-500 via-teal-500 to-cyan-500",
+      subtitle: "Cross-reference claimed skills with GitHub commits and LinkedIn tenures, catching overlapping concurrent roles before scheduling costly interview panels."
+    },
+    {
+      badge: "Retention Forecasting & Offer Optimization",
+      prefix: "Close faster.",
+      action: "Calibrate with",
+      highlight: "predictive AI.",
+      gradient: "from-indigo-500 via-purple-500 to-brand-500",
+      subtitle: "Simulate candidate acceptance probabilities, forecast 2-year retention hazards with Cox models, and optimize equity compensation packages."
+    },
+    {
+      badge: "Ethical Human-in-the-Loop Architecture",
+      prefix: "Lead talent.",
+      action: "Empower with",
+      highlight: "human control.",
+      gradient: "from-amber-500 via-brand-500 to-emerald-500",
+      subtitle: "Autonomous engines synthesize dossiers and draft outreach, but every shortlist, offer, and email requires verified recruiter approval."
+    }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide(prev => (prev + 1) % heroSlides.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [heroSlides.length]);
 
   const handleLaunchDemo = () => {
     demoLogin();
@@ -204,26 +247,57 @@ export const LandingPage = () => {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="space-y-8 max-w-4xl mx-auto"
         >
-          {/* Top Pill Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-500/10 border border-brand-500/25 text-brand-600 dark:text-brand-300 text-xs sm:text-sm font-medium shadow-glow-sm">
-            <Sparkles className="w-4 h-4 text-brand-cyan animate-spin-slow" />
-            <span className="font-heading">Autonomous Decision Support System for Modern Talent Teams</span>
+          {/* Animated Auto-Sliding Hero Banner */}
+          <div className="relative min-h-[300px] sm:min-h-[350px] lg:min-h-[390px] flex flex-col justify-center items-center">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeSlide}
+                initial={{ opacity: 0, y: 22, filter: 'blur(6px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, y: -22, filter: 'blur(6px)' }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="space-y-6 max-w-4xl mx-auto"
+              >
+                {/* Top Pill Badge */}
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-500/10 border border-brand-500/25 text-brand-600 dark:text-brand-300 text-xs sm:text-sm font-medium shadow-glow-sm">
+                  <Sparkles className="w-4 h-4 text-brand-cyan animate-spin-slow" />
+                  <span className="font-heading">{heroSlides[activeSlide].badge}</span>
+                </div>
+
+                {/* Scaled Editorial H1 with animated gradient sweep */}
+                <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight font-heading leading-[1.04] text-foreground">
+                  {heroSlides[activeSlide].prefix}{' '}
+                  <br />
+                  {heroSlides[activeSlide].action}{' '}
+                  <span className={`bg-clip-text text-transparent bg-gradient-to-r ${heroSlides[activeSlide].gradient} animate-gradient-flow inline-block`}>
+                    {heroSlides[activeSlide].highlight}
+                  </span>
+                </h1>
+
+                {/* Subtitle */}
+                <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-normal">
+                  {heroSlides[activeSlide].subtitle}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Slide Navigation Dots */}
+            <div className="flex items-center justify-center gap-2 pt-6">
+              {heroSlides.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setActiveSlide(idx)}
+                  className={`h-2 rounded-full transition-all duration-500 ${
+                    idx === activeSlide
+                      ? 'w-9 bg-gradient-to-r from-brand-500 to-indigo-600 shadow-glow-sm'
+                      : 'w-2.5 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
           </div>
-
-          {/* Scaled Editorial H1 with animated gradient sweep */}
-          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight font-heading leading-[1.04] text-foreground">
-            Hire smarter.{' '}
-            <br />
-            Decide with{' '}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-500 via-indigo-500 to-brand-cyan animate-gradient-flow inline-block">
-              evidence.
-            </span>
-          </h1>
-
-          {/* Subtitle */}
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-normal">
-            Eliminate CV guesswork with evidence-audited candidate personas, multi-source verification, fraud risk intelligence, and human-in-the-loop offer optimization.
-          </p>
 
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-3">
