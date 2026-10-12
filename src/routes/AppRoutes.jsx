@@ -31,17 +31,23 @@ const CommunicationsHubPage = lazy(() => import('../pages/communications/Communi
 const SettingsPage = lazy(() => import('../pages/settings/SettingsPage').then(m => ({ default: m.SettingsPage })));
 const ProfilePage = lazy(() => import('../pages/profile/ProfilePage').then(m => ({ default: m.ProfilePage })));
 
-// Loading Fallback with animated spinner
+// Unified Loading Fallback with matching Preloader aesthetic
 const PageLoader = () => (
-  <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 space-y-4">
-    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-500 to-indigo-600 flex items-center justify-center text-white shadow-glow-sm animate-pulse">
-      <Sparkles className="w-6 h-6" />
-    </div>
-    <div className="text-center">
-      <span className="text-sm font-bold font-heading text-foreground block">
-        Recruiter<span className="text-brand-500">.AI</span>
-      </span>
-      <span className="text-xs font-mono text-muted-foreground">Loading intelligent workspace...</span>
+  <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 select-none">
+    <div className="relative flex flex-col items-center max-w-xs w-full space-y-4 text-center">
+      <div className="p-4 rounded-2xl glass-panel border border-card-border bg-card/90 shadow-lg flex items-center justify-center animate-pulse">
+        <img
+          src="/ai_rec_logo.png"
+          alt="Recruiter.AI"
+          className="h-10 w-auto object-contain drop-shadow"
+        />
+      </div>
+      <div className="w-48 space-y-1.5">
+        <div className="h-1.5 w-full bg-muted/60 rounded-full overflow-hidden border border-card-border/60">
+          <div className="h-full w-2/3 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-indigo-600 animate-pulse" />
+        </div>
+        <p className="text-[11px] font-mono text-muted-foreground">Loading workspace...</p>
+      </div>
     </div>
   </div>
 );

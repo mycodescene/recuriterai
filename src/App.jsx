@@ -13,7 +13,7 @@ export function App() {
     <BrowserRouter>
       {showPreloader && (
         <Preloader
-          duration={2600}
+          duration={2000}
           onComplete={() => setShowPreloader(false)}
         />
       )}

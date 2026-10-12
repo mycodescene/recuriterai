@@ -53,76 +53,93 @@ export const LandingPage = () => {
   };
 
   const companyLogos = [
-    <div className="flex items-center gap-2.5 px-6 py-2.5 rounded-2xl glass-panel border border-card-border/60 text-muted-foreground hover:text-foreground transition-all">
-      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-      <span className="font-heading font-bold text-sm tracking-tight text-foreground">Careem Tech Labs</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-card-border hover:border-brand-500/50 shadow-sm transition-all group bg-card/90">
+      <span className="w-3.5 h-3.5 rounded bg-emerald-500 shrink-0 shadow-sm" />
+      <span className="font-heading font-extrabold text-base sm:text-lg tracking-tight text-foreground group-hover:text-brand-500 transition-colors">Careem Tech Labs</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">Mobility AI</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-6 py-2.5 rounded-2xl glass-panel border border-card-border/60 text-muted-foreground hover:text-foreground transition-all">
-      <span className="w-2.5 h-2.5 rounded-full bg-brand-500" />
-      <span className="font-heading font-bold text-sm tracking-tight text-foreground">Systems Limited</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-card-border hover:border-brand-500/50 shadow-sm transition-all group bg-card/90">
+      <span className="w-3.5 h-3.5 rounded bg-brand-500 shrink-0 shadow-sm" />
+      <span className="font-heading font-extrabold text-base sm:text-lg tracking-tight text-foreground group-hover:text-brand-500 transition-colors">Systems Limited</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20 uppercase tracking-wider">Enterprise Scale</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-6 py-2.5 rounded-2xl glass-panel border border-card-border/60 text-muted-foreground hover:text-foreground transition-all">
-      <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
-      <span className="font-heading font-bold text-sm tracking-tight text-foreground">Motive Global</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-card-border hover:border-brand-500/50 shadow-sm transition-all group bg-card/90">
+      <span className="w-3.5 h-3.5 rounded bg-indigo-500 shrink-0 shadow-sm" />
+      <span className="font-heading font-extrabold text-base sm:text-lg tracking-tight text-foreground group-hover:text-brand-500 transition-colors">Motive Global</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 uppercase tracking-wider">IoT & Telemetry</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-6 py-2.5 rounded-2xl glass-panel border border-card-border/60 text-muted-foreground hover:text-foreground transition-all">
-      <span className="w-2.5 h-2.5 rounded-full bg-cyan-500" />
-      <span className="font-heading font-bold text-sm tracking-tight text-foreground">Arbisoft</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-card-border hover:border-brand-500/50 shadow-sm transition-all group bg-card/90">
+      <span className="w-3.5 h-3.5 rounded bg-cyan-500 shrink-0 shadow-sm" />
+      <span className="font-heading font-extrabold text-base sm:text-lg tracking-tight text-foreground group-hover:text-brand-500 transition-colors">Arbisoft</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 uppercase tracking-wider">EdTech & Python</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-6 py-2.5 rounded-2xl glass-panel border border-card-border/60 text-muted-foreground hover:text-foreground transition-all">
-      <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-      <span className="font-heading font-bold text-sm tracking-tight text-foreground">Dubizzle Group</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-card-border hover:border-brand-500/50 shadow-sm transition-all group bg-card/90">
+      <span className="w-3.5 h-3.5 rounded bg-amber-500 shrink-0 shadow-sm" />
+      <span className="font-heading font-extrabold text-base sm:text-lg tracking-tight text-foreground group-hover:text-brand-500 transition-colors">Dubizzle Group</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 uppercase tracking-wider">Marketplace</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-6 py-2.5 rounded-2xl glass-panel border border-card-border/60 text-muted-foreground hover:text-foreground transition-all">
-      <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-      <span className="font-heading font-bold text-sm tracking-tight text-foreground">VentureDive</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-card-border hover:border-brand-500/50 shadow-sm transition-all group bg-card/90">
+      <span className="w-3.5 h-3.5 rounded bg-rose-500 shrink-0 shadow-sm" />
+      <span className="font-heading font-extrabold text-base sm:text-lg tracking-tight text-foreground group-hover:text-brand-500 transition-colors">VentureDive</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-rose-500/10 text-rose-500 border border-rose-500/20 uppercase tracking-wider">Product Studio</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-6 py-2.5 rounded-2xl glass-panel border border-card-border/60 text-muted-foreground hover:text-foreground transition-all">
-      <span className="w-2.5 h-2.5 rounded-full bg-teal-500" />
-      <span className="font-heading font-bold text-sm tracking-tight text-foreground">10Pearls Tech</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-card-border hover:border-brand-500/50 shadow-sm transition-all group bg-card/90">
+      <span className="w-3.5 h-3.5 rounded bg-teal-500 shrink-0 shadow-sm" />
+      <span className="font-heading font-extrabold text-base sm:text-lg tracking-tight text-foreground group-hover:text-brand-500 transition-colors">10Pearls Tech</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20 uppercase tracking-wider">Cloud Native</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-6 py-2.5 rounded-2xl glass-panel border border-card-border/60 text-muted-foreground hover:text-foreground transition-all">
-      <span className="w-2.5 h-2.5 rounded-full bg-violet-500" />
-      <span className="font-heading font-bold text-sm tracking-tight text-foreground">Stripe Talent Hub</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-card-border hover:border-brand-500/50 shadow-sm transition-all group bg-card/90">
+      <span className="w-3.5 h-3.5 rounded bg-violet-500 shrink-0 shadow-sm" />
+      <span className="font-heading font-extrabold text-base sm:text-lg tracking-tight text-foreground group-hover:text-brand-500 transition-colors">Stripe Talent Hub</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20 uppercase tracking-wider">FinTech Core</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-6 py-2.5 rounded-2xl glass-panel border border-card-border/60 text-muted-foreground hover:text-foreground transition-all">
-      <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-      <span className="font-heading font-bold text-sm tracking-tight text-foreground">Datadog Engineering</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-card-border hover:border-brand-500/50 shadow-sm transition-all group bg-card/90">
+      <span className="w-3.5 h-3.5 rounded bg-blue-500 shrink-0 shadow-sm" />
+      <span className="font-heading font-extrabold text-base sm:text-lg tracking-tight text-foreground group-hover:text-brand-500 transition-colors">Datadog Engineering</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 uppercase tracking-wider">Infra Telemetry</span>
     </div>
   ];
 
   const intelligenceSignals = [
-    <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl glass-panel border border-brand-500/30 text-xs font-bold text-foreground shadow-sm">
-      <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
-      <span>🎯 94% Semantic Match Precision</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-brand-500/40 text-foreground shadow-sm transition-all group bg-card/90">
+      <span className="w-3 h-3 rounded bg-brand-500 animate-pulse shrink-0" />
+      <span className="text-base sm:text-lg font-bold font-heading text-foreground">🎯 94% Semantic Match Precision</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-brand-500/15 text-brand-600 dark:text-brand-400 border border-brand-500/25 uppercase tracking-wider">Vector AI</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl glass-panel border border-emerald-500/30 text-xs font-bold text-foreground shadow-sm">
-      <span className="w-2 h-2 rounded-full bg-emerald-500" />
-      <span>🛡️ Zero False Claims: Fraud Radar</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-emerald-500/40 text-foreground shadow-sm transition-all group bg-card/90">
+      <span className="w-3 h-3 rounded bg-emerald-500 shrink-0" />
+      <span className="text-base sm:text-lg font-bold font-heading text-foreground">🛡️ Zero False Claims: Fraud Radar</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 uppercase tracking-wider">Audit Verified</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl glass-panel border border-indigo-500/30 text-xs font-bold text-foreground shadow-sm">
-      <span className="w-2 h-2 rounded-full bg-indigo-500" />
-      <span>⚡ Real-Time SHAP Factor Weighting</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-indigo-500/40 text-foreground shadow-sm transition-all group bg-card/90">
+      <span className="w-3 h-3 rounded bg-indigo-500 shrink-0" />
+      <span className="text-base sm:text-lg font-bold font-heading text-foreground">⚡ Real-Time SHAP Factor Weighting</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-indigo-500/15 text-indigo-500 border border-indigo-500/25 uppercase tracking-wider">Explainable</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl glass-panel border border-cyan-500/30 text-xs font-bold text-foreground shadow-sm">
-      <span className="w-2 h-2 rounded-full bg-cyan-500" />
-      <span>🔍 GitHub Commits & Codebase Cross-Check</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-cyan-500/40 text-foreground shadow-sm transition-all group bg-card/90">
+      <span className="w-3 h-3 rounded bg-cyan-500 shrink-0" />
+      <span className="text-base sm:text-lg font-bold font-heading text-foreground">🔍 GitHub Commits & Codebase Cross-Check</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border border-cyan-500/25 uppercase tracking-wider">Telemetry</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl glass-panel border border-amber-500/30 text-xs font-bold text-foreground shadow-sm">
-      <span className="w-2 h-2 rounded-full bg-amber-500" />
-      <span>📊 Cox Proportional Retention Hazard Model</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-amber-500/40 text-foreground shadow-sm transition-all group bg-card/90">
+      <span className="w-3 h-3 rounded bg-amber-500 shrink-0" />
+      <span className="text-base sm:text-lg font-bold font-heading text-foreground">📊 Cox Proportional Retention Hazard Model</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25 uppercase tracking-wider">Retention</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl glass-panel border border-rose-500/30 text-xs font-bold text-foreground shadow-sm">
-      <span className="w-2 h-2 rounded-full bg-rose-500" />
-      <span>💼 93.8% Recruiter Offer Acceptance Rate</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-rose-500/40 text-foreground shadow-sm transition-all group bg-card/90">
+      <span className="w-3 h-3 rounded bg-rose-500 shrink-0" />
+      <span className="text-base sm:text-lg font-bold font-heading text-foreground">💼 93.8% Recruiter Offer Acceptance Rate</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-rose-500/15 text-rose-500 border border-rose-500/25 uppercase tracking-wider">Optimizer</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl glass-panel border border-teal-500/30 text-xs font-bold text-foreground shadow-sm">
-      <span className="w-2 h-2 rounded-full bg-teal-500" />
-      <span>👥 Evidence-Backed AI Persona Dossiers</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-teal-500/40 text-foreground shadow-sm transition-all group bg-card/90">
+      <span className="w-3 h-3 rounded bg-teal-500 shrink-0" />
+      <span className="text-base sm:text-lg font-bold font-heading text-foreground">👥 Evidence-Backed AI Persona Dossiers</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/25 uppercase tracking-wider">Flagship</span>
     </div>,
-    <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl glass-panel border border-purple-500/30 text-xs font-bold text-foreground shadow-sm">
-      <span className="w-2 h-2 rounded-full bg-purple-500" />
-      <span>🤝 100% Recruiter Human Review Mandate</span>
+    <div className="flex items-center gap-3.5 px-6 py-3.5 rounded-xl glass-panel border border-purple-500/40 text-foreground shadow-sm transition-all group bg-card/90">
+      <span className="w-3 h-3 rounded bg-purple-500 shrink-0" />
+      <span className="text-base sm:text-lg font-bold font-heading text-foreground">🤝 100% Recruiter Human Review Mandate</span>
+      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-purple-500/15 text-purple-500 border border-purple-500/25 uppercase tracking-wider">Ethical AI</span>
     </div>
   ];
 
@@ -495,11 +512,11 @@ export const LandingPage = () => {
           </p>
         </div>
         
-        {/* Row 1: Leftward scrolling companies */}
-        <Marquee items={companyLogos} speed={32} direction="left" />
+        {/* Row 1: Leftward scrolling companies (smooth calm speed: 65s) */}
+        <Marquee items={companyLogos} speed={65} direction="left" />
 
-        {/* Row 2: Rightward scrolling intelligence signals */}
-        <Marquee items={intelligenceSignals} speed={26} direction="right" />
+        {/* Row 2: Rightward scrolling intelligence signals (smooth calm speed: 65s) */}
+        <Marquee items={intelligenceSignals} speed={65} direction="right" />
       </section>
 
       {/* 4. Bento Grid: 9-Module Feature Architecture */}
