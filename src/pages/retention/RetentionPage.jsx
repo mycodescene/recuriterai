@@ -212,10 +212,10 @@ export const RetentionPage = () => {
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-muted/40 border border-card-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-brand-500 shrink-0" />
-              <span className="text-muted-foreground">
+          <div className="p-4 rounded-xl bg-muted/40 border border-card-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 text-xs">
+            <div className="flex items-start sm:items-center gap-2">
+              <Sparkles className="w-4 h-4 text-brand-500 shrink-0 mt-0.5 sm:mt-0" />
+              <span className="text-muted-foreground leading-relaxed">
                 Simulated Impact: Compensation ({simulatedResult?.breakdown?.salaryContribution > 0 ? `+${simulatedResult?.breakdown?.salaryContribution}%` : `${simulatedResult?.breakdown?.salaryContribution || 0}%`}), Commute ({simulatedResult?.breakdown?.commuteContribution > 0 ? `+${simulatedResult?.breakdown?.commuteContribution}%` : `${simulatedResult?.breakdown?.commuteContribution || 0}%`})
               </span>
             </div>
@@ -223,7 +223,7 @@ export const RetentionPage = () => {
               size="sm"
               variant="outline"
               onClick={() => { setSalaryDelta(0); setCommuteMins(25); setTenureTargetMonths(24); }}
-              className="text-xs shrink-0"
+              className="text-xs shrink-0 w-full sm:w-auto justify-center"
             >
               Reset to Baseline
             </Button>
@@ -233,13 +233,16 @@ export const RetentionPage = () => {
 
       {/* SHAP-Style Contributing Factors Chart (Positive vs Negative Drivers) */}
       <Card className="space-y-6">
-        <div>
-          <h3 className="text-lg font-bold font-heading text-foreground">
-            Explainable Contributing Factors (SHAP Analysis)
-          </h3>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Empirical drivers positively and negatively pushing the candidate's baseline retention score.
-          </p>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <h3 className="text-lg font-bold font-heading text-foreground">
+              Explainable Contributing Factors (SHAP Analysis)
+            </h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Empirical drivers positively and negatively pushing the candidate's baseline retention score.
+            </p>
+          </div>
+          <Badge variant="brand" size="sm" dot>Feature Weights</Badge>
         </div>
 
         <div className="space-y-3.5">
@@ -249,16 +252,16 @@ export const RetentionPage = () => {
 
             return (
               <div key={idx} className="p-3.5 rounded-xl bg-muted/30 border border-card-border space-y-2">
-                <div className="flex items-center justify-between text-xs font-mono">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs font-mono">
                   <span className="font-semibold text-foreground flex items-center gap-2">
                     {isPositive ? (
                       <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                     ) : (
                       <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0" />
                     )}
-                    {factor.name}
+                    <span>{factor.name}</span>
                   </span>
-                  <span className={`font-bold ${isPositive ? 'text-emerald-500' : 'text-rose-500'}`}>
+                  <span className={`font-bold shrink-0 ${isPositive ? 'text-emerald-500' : 'text-rose-500'}`}>
                     {factor.impact > 0 ? `+${factor.impact}%` : `${factor.impact}%`} impact
                   </span>
                 </div>
@@ -276,6 +279,34 @@ export const RetentionPage = () => {
           })}
         </div>
       </Card>
+
+      {/* Bottom Retention Action Banner */}
+      <div className="p-4 rounded-2xl bg-brand-500/10 dark:bg-brand-500/15 border border-brand-500/25 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 text-xs shadow-sm">
+        <div className="flex items-center gap-3">
+          <HeartHandshake className="w-5 h-5 text-brand-500 shrink-0" />
+          <span className="text-muted-foreground font-mono font-medium leading-relaxed">
+            Tenure probability is recalibrated dynamically. Candidate: {candidates.find(c => c.id === selectedCandidateId)?.name || 'Selected Candidate'}
+          </span>
+        </div>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => navigate(`/app/persona/${selectedCandidateId}`)}
+            className="text-xs justify-center"
+          >
+            Inspect Persona Dossier
+          </Button>
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={() => navigate('/app/offers')}
+            className="text-xs justify-center"
+          >
+            Optimize Compensation Offer
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

@@ -207,12 +207,12 @@ export const CommunicationsHubPage = () => {
       </div>
 
       {/* Status Tabs Bar */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-card-border pb-3">
+      <div className="flex items-center gap-2 border-b border-card-border pb-3 overflow-x-auto no-scrollbar whitespace-nowrap">
         {['all', 'Pending', 'Approved', 'Sent', 'Rejected'].map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition-colors ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium transition-colors shrink-0 ${
               activeTab === tab
                 ? 'bg-brand-500 text-white font-bold shadow-glow-sm'
                 : 'bg-muted/50 text-muted-foreground hover:text-foreground'

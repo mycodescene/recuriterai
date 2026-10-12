@@ -56,25 +56,61 @@ export const PersonaStudioPage = () => {
   ];
 
   useEffect(() => {
+    let isMounted = true;
     const load = async () => {
       setIsLoading(true);
       try {
-        const [cands, cand] = await Promise.all([
-          candidateService.getAll(),
-          candidateService.getById(id)
-        ]);
-        setAllCandidates(cands);
-        setCandidate(cand);
-        // Start typewriter on initial load
-        setTypewriterActive(true);
+        const cands = await candidateService.getAll();
+        if (!isMounted) return;
+        setAllCandidates(cands || []);
+
+        // Find candidate by exact id or match prefix (e.g. 'cand-', 'cand')
+        let matchedCand = null;
+        if (cands && cands.length > 0) {
+          if (id && id !== 'cand-' && id !== 'cand') {
+            matchedCand = cands.find(c => c.id.toLowerCase() === id.toLowerCase());
+          }
+          // If not exact match, find candidate that starts with the given id prefix or fallback to first candidate
+          if (!matchedCand) {
+            matchedCand = cands.find(c => c.id.toLowerCase().startsWith(id.toLowerCase())) || cands[0];
+          }
+        }
+
+        // If candidate found and id in URL didn't match canonical id, update URL smoothly
+        if (matchedCand && matchedCand.id !== id) {
+          navigate(`/app/persona/${matchedCand.id}`, { replace: true });
+        }
+
+        if (matchedCand) {
+          // Fetch full candidate profile if needed
+          const fullCand = await candidateService.getById(matchedCand.id);
+          if (isMounted) {
+            setCandidate(fullCand || matchedCand);
+            setTypewriterActive(true);
+          }
+        } else {
+          setCandidate(null);
+        }
       } catch (e) {
         console.error('Failed to load candidate persona', e);
+        // Fallback to local default candidate
+        const fallback = await candidateService.getById('cand-1').catch(() => null);
+        if (isMounted && fallback) {
+          setCandidate(fallback);
+          navigate(`/app/persona/${fallback.id}`, { replace: true });
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
     load();
-  }, [id]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id, navigate]);
 
   const handleRunPersonaGeneration = async () => {
     setIsGenerating(true);
@@ -91,10 +127,10 @@ export const PersonaStudioPage = () => {
     toast.success('AI Persona & Evidence audit re-calibrated successfully');
   };
 
-  if (isLoading || !candidate) {
+  if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <Skeleton className="h-10 w-64" />
           <Skeleton className="h-10 w-40" />
         </div>
@@ -102,6 +138,32 @@ export const PersonaStudioPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Skeleton className="h-80 rounded-3xl" />
           <Skeleton className="h-80 rounded-3xl" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!candidate) {
+    return (
+      <div className="min-h-[50vh] flex flex-col items-center justify-center text-center p-6 space-y-4">
+        <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+          <AlertTriangle className="w-8 h-8" />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold font-heading text-foreground">Candidate Not Found</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-md">
+            The requested candidate identifier ({id || 'none'}) could not be located in your pipeline.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <Button variant="secondary" onClick={() => navigate('/app/candidates')}>
+            Browse All Candidates
+          </Button>
+          {allCandidates.length > 0 && (
+            <Button variant="primary" onClick={() => navigate(`/app/persona/${allCandidates[0].id}`)}>
+              View {allCandidates[0].name}
+            </Button>
+          )}
         </div>
       </div>
     );
@@ -121,7 +183,7 @@ export const PersonaStudioPage = () => {
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* 1. Studio Header with Candidate Switcher & Re-Generate Action */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
+        <div className="w-full sm:w-auto">
           <div className="flex items-center gap-2">
             <Badge variant="brand" size="sm" dot>Flagship Studio</Badge>
             <span className="text-xs font-mono text-muted-foreground uppercase">Module 3</span>
@@ -134,12 +196,12 @@ export const PersonaStudioPage = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
           {/* Candidate selector */}
           <select
             value={candidate.id}
             onChange={(e) => navigate(`/app/persona/${e.target.value}`)}
-            className="h-10 px-3 bg-card border border-card-border rounded-xl text-xs text-foreground outline-none focus:ring-2 focus:ring-brand-500 font-medium cursor-pointer"
+            className="w-full sm:w-64 md:w-72 h-10 px-3 bg-card border border-card-border rounded-xl text-xs text-foreground outline-none focus:ring-2 focus:ring-brand-500 font-medium cursor-pointer truncate shadow-sm"
           >
             {allCandidates.map(c => (
               <option key={c.id} value={c.id}>
@@ -154,7 +216,7 @@ export const PersonaStudioPage = () => {
             variant="primary"
             size="md"
             leftIcon={<RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />}
-            className="shadow-glow-sm"
+            className="w-full sm:w-auto shadow-glow-sm justify-center shrink-0"
           >
             {isGenerating ? 'Synthesizing...' : 'Re-Generate Persona'}
           </Button>
@@ -396,22 +458,22 @@ export const PersonaStudioPage = () => {
           </div>
 
           {/* Filter Segmented Control */}
-          <div className="flex items-center bg-muted/60 p-1 rounded-xl border border-card-border text-xs font-mono">
+          <div className="flex items-center bg-muted/60 p-1 rounded-xl border border-card-border text-xs font-mono overflow-x-auto max-w-full no-scrollbar whitespace-nowrap">
             <button
               onClick={() => setClaimFilter('all')}
-              className={`px-3 py-1.5 rounded-lg transition-colors ${claimFilter === 'all' ? 'bg-card text-brand-500 font-bold shadow-sm' : 'text-muted-foreground'}`}
+              className={`px-3 py-1.5 rounded-lg transition-colors shrink-0 ${claimFilter === 'all' ? 'bg-card text-brand-500 font-bold shadow-sm' : 'text-muted-foreground'}`}
             >
               All Claims ({candidate.claims?.length || 0})
             </button>
             <button
               onClick={() => setClaimFilter('verified')}
-              className={`px-3 py-1.5 rounded-lg transition-colors ${claimFilter === 'verified' ? 'bg-card text-emerald-500 font-bold shadow-sm' : 'text-muted-foreground'}`}
+              className={`px-3 py-1.5 rounded-lg transition-colors shrink-0 ${claimFilter === 'verified' ? 'bg-card text-emerald-500 font-bold shadow-sm' : 'text-muted-foreground'}`}
             >
               Verified ({verifiedCount})
             </button>
             <button
               onClick={() => setClaimFilter('unverified')}
-              className={`px-3 py-1.5 rounded-lg transition-colors ${claimFilter === 'unverified' ? 'bg-card text-amber-500 font-bold shadow-sm' : 'text-muted-foreground'}`}
+              className={`px-3 py-1.5 rounded-lg transition-colors shrink-0 ${claimFilter === 'unverified' ? 'bg-card text-amber-500 font-bold shadow-sm' : 'text-muted-foreground'}`}
             >
               Unverified ({unverifiedCount})
             </button>
@@ -575,19 +637,19 @@ export const PersonaStudioPage = () => {
       </div>
 
       {/* 7. Mandatory Human-Review Footer Banner */}
-      <div className="p-4 rounded-2xl bg-brand-500/10 dark:bg-brand-500/15 border border-brand-500/25 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs shadow-sm">
+      <div className="p-4 rounded-2xl bg-brand-500/10 dark:bg-brand-500/15 border border-brand-500/25 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 text-xs shadow-sm">
         <div className="flex items-center gap-3">
           <Shield className="w-5 h-5 text-brand-500 shrink-0" />
-          <span className="text-muted-foreground font-mono font-medium">
+          <span className="text-muted-foreground font-mono font-medium leading-relaxed">
             AI-generated insight. Review before making hiring decisions. Candidate ID: {candidate.id}
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
           <Button
             size="sm"
             variant="secondary"
             onClick={() => navigate('/app/matching')}
-            className="text-xs"
+            className="text-xs justify-center"
           >
             Compare in Matching
           </Button>
@@ -595,7 +657,7 @@ export const PersonaStudioPage = () => {
             size="sm"
             variant="primary"
             onClick={() => navigate('/app/offers')}
-            className="text-xs"
+            className="text-xs justify-center"
           >
             Proceed to Offer
           </Button>

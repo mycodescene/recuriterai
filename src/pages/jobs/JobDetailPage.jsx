@@ -29,32 +29,78 @@ export const JobDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchData = async () => {
       setIsLoading(true);
       try {
+        const allJobs = await jobService.getAll().catch(() => []);
+        let matchedJob = null;
+        if (allJobs && allJobs.length > 0) {
+          if (id && id !== 'job-' && id !== 'job') {
+            matchedJob = allJobs.find(j => j.id.toLowerCase() === id.toLowerCase());
+          }
+          if (!matchedJob) {
+            matchedJob = allJobs.find(j => j.id.toLowerCase().startsWith((id || '').toLowerCase())) || allJobs[0];
+          }
+        }
+
+        if (matchedJob && matchedJob.id !== id) {
+          navigate(`/app/jobs/${matchedJob.id}`, { replace: true });
+        }
+
+        const targetId = matchedJob ? matchedJob.id : (id || 'job-1');
         const [jobData, candsData] = await Promise.all([
-          jobService.getById(id),
-          candidateService.getAll({ jobId: id })
+          matchedJob ? jobService.getById(matchedJob.id) : jobService.getById(targetId),
+          candidateService.getAll({ jobId: targetId }).catch(() => [])
         ]);
-        setJob(jobData);
-        // Rank descending
-        const sorted = [...candsData].sort((a, b) => b.matchScore - a.matchScore);
-        setCandidates(sorted);
+
+        if (isMounted) {
+          setJob(jobData || matchedJob);
+          const sorted = [...(candsData || [])].sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+          setCandidates(sorted);
+        }
       } catch (e) {
         console.error('Failed to load job details', e);
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
     fetchData();
-  }, [id]);
 
-  if (isLoading || !job) {
+    return () => {
+      isMounted = false;
+    };
+  }, [id, navigate]);
+
+  if (isLoading) {
     return (
       <div className="space-y-6">
         <Skeleton className="h-10 w-48" />
         <Skeleton className="h-64 rounded-2xl" />
         <Skeleton className="h-80 rounded-2xl" />
+      </div>
+    );
+  }
+
+  if (!job) {
+    return (
+      <div className="min-h-[50vh] flex flex-col items-center justify-center text-center p-6 space-y-4">
+        <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+          <Briefcase className="w-8 h-8" />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold font-heading text-foreground">Job Posting Not Found</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-md">
+            Job requisition with ID "{id}" could not be located in your organization pipeline.
+          </p>
+        </div>
+        <div className="pt-2">
+          <Button variant="primary" onClick={() => navigate('/app/jobs')}>
+            Return to Active Jobs
+          </Button>
+        </div>
       </div>
     );
   }

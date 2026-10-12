@@ -157,16 +157,21 @@ export const RiskIntelligencePage = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            {['all', 'high', 'medium', 'low'].map(sev => (
+          <div className="flex items-center gap-1.5 overflow-x-auto max-w-full no-scrollbar pb-1 w-full sm:w-auto">
+            {[
+              { id: 'all', label: `All (${riskData.flags?.length || 0})` },
+              { id: 'high', label: `High (${riskData.flags?.filter(f => f.severity.toLowerCase() === 'high').length || 0})` },
+              { id: 'medium', label: `Medium (${riskData.flags?.filter(f => f.severity.toLowerCase() === 'medium').length || 0})` },
+              { id: 'low', label: `Low (${riskData.flags?.filter(f => f.severity.toLowerCase() === 'low').length || 0})` }
+            ].map(({ id: sev, label }) => (
               <button
                 key={sev}
                 onClick={() => setFilterSeverity(sev)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium capitalize transition-colors ${
-                  filterSeverity === sev ? 'bg-brand-500 text-white font-bold' : 'bg-muted text-muted-foreground hover:text-foreground'
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium whitespace-nowrap transition-colors shrink-0 ${
+                  filterSeverity === sev ? 'bg-brand-500 text-white font-bold shadow-sm' : 'bg-muted text-muted-foreground hover:text-foreground'
                 }`}
               >
-                {sev}
+                {label}
               </button>
             ))}
           </div>
@@ -179,11 +184,11 @@ export const RiskIntelligencePage = () => {
               className="py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-muted/20 px-2 rounded-xl transition-colors"
             >
               <div className="space-y-1 flex-1">
-                <div className="flex items-center gap-2.5">
+                <div className="flex flex-wrap items-center gap-2">
                   <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider ${
-                    flag.severity === 'High' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30' :
-                    flag.severity === 'Medium' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' :
-                    'bg-slate-500/10 text-slate-400 border border-slate-500/30'
+                    flag.severity === 'High' ? 'bg-rose-500/10 text-rose-500 dark:text-rose-400 border border-rose-500/30' :
+                    flag.severity === 'Medium' ? 'bg-amber-500/10 text-amber-500 dark:text-amber-400 border border-amber-500/30' :
+                    'bg-slate-500/10 text-slate-500 dark:text-slate-400 border border-slate-500/30'
                   }`}>
                     {flag.severity} Severity
                   </span>
@@ -194,19 +199,19 @@ export const RiskIntelligencePage = () => {
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   {flag.description}
                 </p>
-                <div className="flex items-center gap-3 text-[11px] font-mono text-muted-foreground pt-1">
+                <div className="flex flex-wrap items-center gap-3 text-[11px] font-mono text-muted-foreground pt-1">
                   <span>Candidate: <strong className="text-foreground">{flag.candidateName}</strong></span>
-                  <span>•</span>
-                  <span>Status: <strong className={flag.status === 'reviewed' ? 'text-emerald-500' : 'text-amber-500'}>{flag.status}</strong></span>
+                  <span className="hidden sm:inline">•</span>
+                  <span>Status: <strong className={flag.status === 'reviewed' ? 'text-emerald-500 font-bold' : 'text-amber-500 font-bold'}>{flag.status}</strong></span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto shrink-0">
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => navigate(`/app/persona/${flag.candidateId}`)}
-                  className="text-xs"
+                  className="text-xs justify-center w-full sm:w-auto"
                 >
                   Inspect Dossier
                 </Button>
@@ -215,7 +220,7 @@ export const RiskIntelligencePage = () => {
                     size="sm"
                     variant="secondary"
                     onClick={(e) => handleMarkReviewed(flag.id, e)}
-                    className="text-xs"
+                    className="text-xs justify-center w-full sm:w-auto"
                     leftIcon={<Check className="w-3.5 h-3.5 text-emerald-500" />}
                   >
                     Mark Reviewed
@@ -227,7 +232,7 @@ export const RiskIntelligencePage = () => {
         </div>
       </Card>
 
-      {/* Sortable High-Risk Candidates Table */}
+      {/* Sortable High-Risk Candidates Table / Card Feed */}
       <Card className="p-0 overflow-hidden">
         <div className="p-4 sm:p-6 border-b border-card-border">
           <h3 className="text-base font-bold font-heading text-foreground">
@@ -238,7 +243,8 @@ export const RiskIntelligencePage = () => {
           </p>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden sm:block overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-muted/50 border-b border-card-border font-mono text-muted-foreground uppercase tracking-wider text-[11px]">
               <tr>
@@ -280,6 +286,39 @@ export const RiskIntelligencePage = () => {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Responsive Cards Feed */}
+        <div className="sm:hidden divide-y divide-card-border">
+          {riskData.highRiskCandidates?.map((cand) => (
+            <div
+              key={cand.id}
+              onClick={() => navigate(`/app/persona/${cand.id}`)}
+              className="p-4 space-y-3 hover:bg-muted/30 cursor-pointer transition-colors"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-rose-600 to-red-600 flex items-center justify-center text-white font-mono font-bold text-xs shadow-sm">
+                    {cand.avatar}
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-foreground">{cand.name}</h4>
+                    <p className="text-[11px] text-muted-foreground">{cand.title}</p>
+                  </div>
+                </div>
+                <Badge variant="risk" size="sm">
+                  {cand.riskScore}% Risk
+                </Badge>
+              </div>
+
+              <div className="flex items-center justify-between text-xs font-mono text-muted-foreground pt-1">
+                <span>{cand.riskFlags?.length || 0} Flags Logged</span>
+                <span className="text-brand-500 font-semibold flex items-center gap-1">
+                  Examine Dossier <ChevronRight className="w-3.5 h-3.5" />
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </Card>
     </div>

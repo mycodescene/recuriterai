@@ -32,26 +32,78 @@ export const CandidateProfilePage = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
+    let isMounted = true;
     const fetchCandidate = async () => {
       setIsLoading(true);
       try {
-        const data = await candidateService.getById(id);
-        setCandidate(data);
+        const cands = await candidateService.getAll().catch(() => []);
+        let matchedCand = null;
+        if (cands && cands.length > 0) {
+          if (id && id !== 'cand-' && id !== 'cand') {
+            matchedCand = cands.find(c => c.id.toLowerCase() === id.toLowerCase());
+          }
+          if (!matchedCand) {
+            matchedCand = cands.find(c => c.id.toLowerCase().startsWith((id || '').toLowerCase())) || cands[0];
+          }
+        }
+
+        if (matchedCand && matchedCand.id !== id) {
+          navigate(`/app/candidates/${matchedCand.id}`, { replace: true });
+        }
+
+        if (matchedCand) {
+          const fullData = await candidateService.getById(matchedCand.id);
+          if (isMounted) {
+            setCandidate(fullData || matchedCand);
+          }
+        } else {
+          const data = await candidateService.getById(id || 'cand-1');
+          if (isMounted) {
+            setCandidate(data);
+          }
+        }
       } catch (e) {
         console.error('Failed to load candidate', e);
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
     fetchCandidate();
-  }, [id]);
 
-  if (isLoading || !candidate) {
+    return () => {
+      isMounted = false;
+    };
+  }, [id, navigate]);
+
+  if (isLoading) {
     return (
       <div className="space-y-6">
         <Skeleton className="h-10 w-48" />
         <Skeleton className="h-48 rounded-2xl" />
         <Skeleton className="h-96 rounded-2xl" />
+      </div>
+    );
+  }
+
+  if (!candidate) {
+    return (
+      <div className="min-h-[50vh] flex flex-col items-center justify-center text-center p-6 space-y-4">
+        <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+          <AlertTriangle className="w-8 h-8" />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold font-heading text-foreground">Candidate Not Found</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-md">
+            Candidate profile with ID "{id}" could not be retrieved.
+          </p>
+        </div>
+        <div className="pt-2">
+          <Button variant="primary" onClick={() => navigate('/app/candidates')}>
+            Return to Candidates Directory
+          </Button>
+        </div>
       </div>
     );
   }
